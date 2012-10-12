@@ -14,8 +14,8 @@ package "libshadow-ruby1.8" do
 end
 
 user "shelby_user" do
-  username node['shelby_user']['name']
-  home "/home/#{node['shelby_user']['name']}"
+  username node['shelby']['user']['name']
+  home "/home/#{node['shelby']['user']['name']}"
   shell "/bin/bash"
   password "$6$pu6KsMcI07I7$EqHrdyiY/TNrimT1Vhw/tDU5ElAQpUgWJ5GCXl9tz9xFPgil3jGnCVHuTgfDUnSU7O0ozeIhilGsLoaRpjwhm/"
   supports :manage_home => true
@@ -25,5 +25,5 @@ end
 group "sudo" do
   action :modify
   append true
-  members [node['shelby_user']['name']]
+  members [node['shelby']['user']['name']]
 end
