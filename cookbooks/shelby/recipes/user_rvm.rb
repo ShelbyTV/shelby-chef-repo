@@ -11,7 +11,7 @@
 # install rvm for the nos user
 node['rvm']['user_installs'] = [
   { 'user'          => node['shelby']['user_rvm']['username'],
-    'default_ruby'  => node['shelby']['user_rvm']['default_ruby']
+    'default_ruby'  => node['shelby']['user_rvm']['default_ruby'],
     'rubies'        => node['shelby']['user_rvm']['rubies']
   }
 ]
