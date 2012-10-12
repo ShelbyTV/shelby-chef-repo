@@ -15,4 +15,4 @@ node['rvm']['user_installs'] = [
     'rubies'        => node['shelby']['user_rvm']['rubies']
   }
 ]
-require_recipe "rvm::user"
+include_recipe "rvm::user"

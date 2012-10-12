@@ -9,6 +9,6 @@
 # Recipe to create the user under which shelby apps will be installed and run,
 # then do a user install of rvm for that user
 
-require_recipe "shelby::user"
+include_recipe "shelby::user"
 node['shelby']['user_rvm']['username'] = node['shelby']['user']['name']
-require_recipe "shelby::user_rvm"
+include_recipe "shelby::user_rvm"
