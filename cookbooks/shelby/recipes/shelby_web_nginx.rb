@@ -8,6 +8,16 @@
 #
 # Install and congigure nginx to serve Shelby web app
 
-node['nginx']['worker_processes'] = 1
+node['nginx']['init_style'] = 'init'
 
-include_recipe "nginx::source"
+node['nginx']['worker_processes'] = 1
+node['nginx']['pid'] = '/var/run/nginx.pid'
+
+node['nginx_conf']['confs'] = [{
+  '50.56.123.73' => {
+    'socket' => "/tmp/shelby-web.socket"
+  }
+}]
+
+include_recipe "nginx"
+include_recipe "nginx_conf"
