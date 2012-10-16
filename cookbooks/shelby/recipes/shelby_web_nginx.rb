@@ -8,16 +8,53 @@
 #
 # Install and congigure nginx to serve Shelby web app
 
-node['nginx']['init_style'] = 'init'
-
+node['nginx']['disable_robots_logging'] = false
 node['nginx']['worker_processes'] = 1
-node['nginx']['pid'] = '/var/run/nginx.pid'
+node['nginx']['multi_accept'] = "on"
+node['nginx']['tcp_nodelay'] = "off"
 
-node['nginx_conf']['confs'] = [{
-  '50.56.123.73' => {
-    'socket' => "/tmp/shelby-web.socket"
-  }
-}]
+include_recipe "nginx::source"
 
-include_recipe "nginx"
-include_recipe "nginx_conf"
+nginx_app "shelby-gt-web" do
+  server_name node['ipaddress']
+  listen ['80 default_server', 'localhost']
+  locations [
+    {
+      :path => "/",
+      :directives => [
+        "proxy_set_header X-Forwarded-Proto $scheme;",
+        "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
+        "proxy_set_header X-Real-IP $remote_addr;",
+        "proxy_set_header Host $host;",
+        "proxy_redirect off;",
+        "proxy_http_version 1.1;",
+        "proxy_set_header Connection '';",
+        "proxy_pass http://shelby;"
+      ]
+    },
+    {
+      :path => "~ ^/(assets|fonts|images|javascripts|stylesheets|system)/",
+      :directives => [
+        "root /home/gt/web/current/public;",
+        "gzip_static on;",
+        "expires max;",
+        "add_header Cache-Control public;"
+      ]
+    },
+    {
+      :path => "~ ^/favicon\.(ico|png)",
+      :directives => [
+        "gzip_static on;",
+        "expires max;",
+        "add_header Cache-Control public;"
+      ]
+    }
+  ]
+  upstreams [
+    {
+      :name => "shelby",
+      :servers => ["unix:/tmp/shelby-web.socket fail_timeout=0"]
+    }
+  ]
+  keepalive_timeout 70
+end
