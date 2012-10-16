@@ -1,42 +1,115 @@
-#
-# Cookbook Name:: nginx
-# Recipe:: default
-# Author:: AJ Christensen <aj@junglist.gen.nz>
-#
-# Copyright 2008-2012, Opscode, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+require_recipe "apt"
 
-include_recipe 'nginx::ohai_plugin'
-
-case node['nginx']['install_method']
-when 'source'
-  include_recipe 'nginx::source'
-when 'package'
-  case node['platform']
-  when 'redhat','centos','scientific','amazon','oracle'
-    include_recipe 'yum::epel'
-  end
-  package 'nginx'
-  service 'nginx' do
-    supports :status => true, :restart => true, :reload => true
-    action :enable
-  end
-  include_recipe 'nginx::commons'
+apt_repository "nginx" do
+  uri "http://ppa.launchpad.net/nginx/stable/ubuntu"
+  distribution node[:nginx][:distribution]
+  components node[:nginx][:components]
+  keyserver "keyserver.ubuntu.com"
+  key "C300EE8C"
+  action :add
 end
 
-service 'nginx' do
+node[:nginx][:apt_packages].each do |nginx_package|
+  package nginx_package do
+    version "#{node[:nginx][:version]}*"
+    options '--force-yes -o Dpkg::Options::="--force-confold"'
+    only_if "[ $(dpkg -l #{nginx_package} 2>&1 | grep #{node[:nginx][:version]}.* | grep -c '^h[ic] ') = 0 ]"
+  end
+end
+
+%w[nginx nginx-common nginx-full].each do |nginx_package|
+  bash "freeze #{nginx_package}" do
+    code "echo #{nginx_package} hold | dpkg --set-selections"
+    only_if "[ $(dpkg --get-selections | grep -c '#{nginx_package}\W*hold') = 0 ]"
+  end
+end
+
+service "nginx" do
   supports :status => true, :restart => true, :reload => true
-  action :start
+end
+
+directory node[:nginx][:log_dir] do
+  owner node[:nginx][:user]
+  group node[:nginx][:group]
+  mode "0755"
+  action :create
+end
+
+%w{nxensite nxdissite}.each do |nxscript|
+  template "/usr/sbin/#{nxscript}" do
+    owner "root"
+    group "root"
+    mode "0755"
+    backup false
+  end
+end
+
+template "nginx.conf" do
+  path "#{node[:nginx][:dir]}/nginx.conf"
+  owner "root"
+  group "root"
+  mode "0644"
+  backup false
+  notifies :restart, resources(:service => "nginx"), :delayed
+end
+
+directory node[:nginx][:sites_common_dir] do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create
+end
+
+
+template "#{node[:nginx][:dir]}/sites-available/default" do
+  source "default-site.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
+directory node[:nginx][:proxy_cache_dir] do
+  owner node[:nginx][:user]
+  group node[:nginx][:group]
+  mode "0755"
+  recursive true
+  action :create
+end
+
+if node[:nginx][:proxy_cache].any?
+  file "#{node[:nginx][:dir]}/conf.d/cache.conf" do
+    owner "root"
+    group "root"
+    mode "0644"
+    content(
+      node[:nginx][:proxy_cache].join("\n")
+    )
+    backup false
+    notifies :restart, resources(:service => "nginx"), :delayed
+  end
+end
+
+service "nginx" do
+  supports :status => true, :restart => true, :reload => true
+  action [:enable, :start]
+end
+
+nginx_site "default" do
+  action (node[:nginx][:default_site] ? :enable : :disable)
+end
+
+if node.has_key?(:bootstrap)
+  rotated_logs_permissions = "#{node[:nginx][:logrotate][:mode]} #{node[:nginx][:user]} #{node[:nginx][:group]}"
+
+  bootstrap_logrotate "nginx" do
+    rotate node[:nginx][:logrotate][:period]
+    keep node[:nginx][:logrotate][:keep]
+    permissions rotated_logs_permissions
+    copytruncate node[:nginx][:logrotate][:copytruncate]
+    sharedscripts node[:nginx][:logrotate][:sharedscripts]
+    prerotate node[:nginx][:logrotate][:prerotate]
+    postrotate node[:nginx][:logrotate][:postrotate]
+  end
+else
+  Chef::Log.error("https://github.com/gchef/bootstrap-cookbook is not available, if you want to configure nginx logrotation, you will need to do it through a different recipe")
 end
