@@ -17,7 +17,7 @@ include_recipe "nginx::source"
 
 nginx_app "shelby-gt-web" do
   server_name node['ipaddress']
-  listen ['80 default_server', 'localhost']
+  listen ['80 default_server', '443 ssl', 'localhost']
   locations [
     {
       :path => "/",
@@ -55,6 +55,14 @@ nginx_app "shelby-gt-web" do
       :name => "shelby",
       :servers => ["unix:/tmp/shelby-web.socket fail_timeout=0"]
     }
+  ]
+  custom_directives [
+    "ssl_certificate #{node['shelby']['web']['certificates']['certificate_file']};",
+    "ssl_certificate_key #{node['shelby']['web']['certificates']['key_file']};",
+    "ssl_session_timeout 10m;",
+    "ssl_protocols  SSLv2 SSLv3 TLSv1;",
+    "ssl_ciphers  HIGH:!aNULL:!MD5;",
+    "ssl_prefer_server_ciphers   on;"
   ]
   keepalive_timeout 70
 end
