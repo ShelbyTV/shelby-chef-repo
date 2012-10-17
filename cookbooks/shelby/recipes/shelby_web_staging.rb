@@ -9,25 +9,8 @@
 # Set up a staging server for the Shelby web app
 
 node['shelby']['web']['domain'] = 'staging.shelby.tv'
+node['shelby']['web']['certificates']['install'] = true
+# don't cache the bookmarklet code so it will be easier to test changes in staging
+node['shelby']['web']['nginx']['extension-cache']['expires'] = false
 
 include_recipe "shelby::shelby_web"
-
-# install the self-signed ssl certificate for staging.shelby.tv
-directory node['shelby']['web']['certificates']['dir'] do
-  owner "root"
-  group "root"
-  mode "0755"
-  action :create
-end
-
-cookbook_file node['shelby']['web']['certificates']['certificate_file'] do
-  owner 'root'
-  group 'root'
-  mode 0600
-end
-
-cookbook_file node['shelby']['web']['certificates']['key_file'] do
-  owner 'root'
-  group 'root'
-  mode 0600
-end

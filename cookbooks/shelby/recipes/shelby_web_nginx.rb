@@ -15,6 +15,31 @@ node['nginx']['tcp_nodelay'] = "off"
 
 include_recipe "nginx::source"
 
+certificate_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.crt"
+key_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.key"
+
+if node['shelby']['web']['certificates']['install']
+  # install the ssl certificates
+  directory node['shelby']['web']['certificates']['dir'] do
+    owner "root"
+    group "root"
+    mode "0755"
+    action :create
+  end
+
+  cookbook_file certificate_file do
+    owner 'root'
+    group 'root'
+    mode 0600
+  end
+
+  cookbook_file key_file do
+    owner 'root'
+    group 'root'
+    mode 0600
+  end
+end
+
 nginx_app "shelby-gt-web" do
   server_name node['ipaddress']
   listen ['80 default_server', '443 ssl', 'localhost']
@@ -33,6 +58,15 @@ nginx_app "shelby-gt-web" do
       ]
     },
     {
+      :path => "= /assets/shelbify.js",
+      :directives => [
+        "root /home/gt/web/current/public;",
+        node['shelby']['web']['nginx']['extension-cache']['expires'] ? "expires #{node['shelby']['web']['nginx']['extension-cache']['expires']};" : nil,
+        "gzip_static on;",
+        node['shelby']['web']['nginx']['extension-cache']['expires'] ? "add_header Cache-Control public;" : nil
+      ].compact
+    },
+    {
       :path => "~ ^/(assets|fonts|images|javascripts|stylesheets|system)/",
       :directives => [
         "root /home/gt/web/current/public;",
@@ -44,6 +78,7 @@ nginx_app "shelby-gt-web" do
     {
       :path => "~ ^/favicon\.(ico|png)",
       :directives => [
+        "root /home/gt/web/current/public;",
         "gzip_static on;",
         "expires max;",
         "add_header Cache-Control public;"
@@ -57,8 +92,8 @@ nginx_app "shelby-gt-web" do
     }
   ]
   custom_directives [
-    "ssl_certificate #{node['shelby']['web']['certificates']['certificate_file']};",
-    "ssl_certificate_key #{node['shelby']['web']['certificates']['key_file']};",
+    "ssl_certificate #{certificate_file};",
+    "ssl_certificate_key #{key_file};",
     "ssl_session_timeout 10m;",
     "ssl_protocols  SSLv2 SSLv3 TLSv1;",
     "ssl_ciphers  HIGH:!aNULL:!MD5;",
