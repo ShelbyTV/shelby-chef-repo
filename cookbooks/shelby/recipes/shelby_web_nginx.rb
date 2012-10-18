@@ -66,6 +66,7 @@ nginx_app "shelby-gt-web" do
         node['shelby']['web']['nginx']['extension-cache']['expires'] ? "add_header Cache-Control public;" : nil
       ].compact
     },
+    #--- send cache expiry headers for static assets ---
     {
       :path => "~ ^/(assets|fonts|images|javascripts|stylesheets|system)/",
       :directives => [
@@ -84,7 +85,7 @@ nginx_app "shelby-gt-web" do
         "add_header Cache-Control public;"
       ]
     }
-  ]
+  ].concat node['shelby']['web']['nginx']['custom_locations']
   upstreams [
     {
       :name => "shelby",
