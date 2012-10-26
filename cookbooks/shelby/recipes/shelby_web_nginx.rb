@@ -15,7 +15,7 @@ node['nginx']['tcp_nodelay'] = "off"
 
 include_recipe "nginx::source"
 
-certificate_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.crt"
+certificate_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.#{node['shelby']['web']['certificates']['file_ext']}"
 key_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.key"
 
 if node['shelby']['web']['certificates']['install']

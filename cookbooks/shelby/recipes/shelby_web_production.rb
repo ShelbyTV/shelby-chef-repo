@@ -26,6 +26,9 @@ node['shelby']['web']['nginx']['custom_locations'] = [
   }
 ]
 
+#production uses a .pem certificate
+node['shelby']['web']['certificates']['file_ext'] = "pem"
+
 include_recipe "shelby::shelby_web"
 
 # support blog deep links b/c tumblr isn't designed for this
