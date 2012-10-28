@@ -10,9 +10,12 @@
 
 # install rvm for the nos user
 node['rvm']['user_installs'] = [
-  { 'user'          => node['shelby']['user_rvm']['username'],
+  {
+    'user'          => node['shelby']['user_rvm']['username'],
     'default_ruby'  => node['shelby']['user_rvm']['default_ruby'],
-    'rubies'        => node['shelby']['user_rvm']['rubies']
+    'rubies'        => node['shelby']['user_rvm']['rubies'],
+    'version'       => node['shelby']['user_rvm']['version'],
+    'branch'        => node['shelby']['user_rvm']['branch']
   }
 ]
 include_recipe "rvm::user"
