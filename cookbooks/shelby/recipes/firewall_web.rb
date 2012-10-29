@@ -8,27 +8,27 @@
 #
 # Recipe to setup iptables for SSH, HTTP, and HTTPS on a web server
 
+# enable platform default firewall
+firewall "ufw" do
+  action :enable
+end
+
 # open standard ssh port, enable firewall
 firewall_rule "ssh" do
   port 22
   action :allow
-  notifies :enable, "firewall[ufw]"
 end
 
-# open standard http port to tcp traffic only; insert as first rule
+# open standard http port to tcp traffic only
 firewall_rule "http" do
   port 80
   protocol :tcp
   action :allow
 end
 
-# open standard https port to tcp traffic only; insert as first rule
+# open standard https port to tcp traffic only
 firewall_rule "https" do
   port 443
   protocol :tcp
   action :allow
-end
-
-firewall "ufw" do
-  action :nothing
 end
