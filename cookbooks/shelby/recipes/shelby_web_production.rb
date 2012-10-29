@@ -8,6 +8,8 @@
 #
 # Set up a production server for the Shelby web app
 
+include_recipe "apt"
+
 # some special redirects for the production shelby.tv environment
 node['shelby']['web']['nginx']['custom_locations'] = [
   #--- host blog at shelby.tv/blog ---
