@@ -8,6 +8,8 @@
 #
 # Set up a server for the Shelby web app
 
+node['shelby']['web']['certificates']['dir'] = "#{node['nginx']['dir']}/certificates"
+
 include_recipe "shelby::shelby_user_rvm"
 # we need Java for rails asset pipeline js minification with YUI
 include_recipe "java"
