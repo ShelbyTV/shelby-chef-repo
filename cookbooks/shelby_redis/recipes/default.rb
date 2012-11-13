@@ -8,5 +8,9 @@
 #
 # Install a redis server
 
-node[:redis][:version] = "2.6.4"
+# !!we'll want to use version 2.6.4 when there's a cookbook that supports it!!
+# node.set[:redis][:version]   = "2.6.4"
+# node.set[:redis][:dir]       = "redis-#{node.redis.version}"
+# node.set[:redis][:source]    = "http://redis.googlecode.com/files/#{node.redis.dir}.tar.gz"
+
 include_recipe "redis"
