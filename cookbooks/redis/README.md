@@ -1,38 +1,31 @@
-# DESCRIPTION:
+## Latest stable Redis, built from source.
 
-Installs Redis. Redis is an open source, advanced key-value store. 
+### Tested only on Ubuntu, 10.04.3, 64bit.
 
-It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
+If you've been using this cookbook in the past, there are some important
+changes that you should take into account before upgrading to the latest
+version
 
-Details http://redis.io/
+1. I'm now using a separate versioning, no longer sticking to the redis one. If
+   the previous cookbook version was 2.4.2 (redis version), this one is 2.0.0.
 
-# REQUIREMENTS:
+2. I made some changes in how configs and restarts are being handled, an
+   upgrade from a previous version will **not** be seamless. The 2.0.0 is the
+hint.
 
-none
+3. I only make the important settings configurable via the cookbook's
+   attributes. The ones which I don't personally use, I've left out. Feel free
+to fork the cookbook, add your own and submit a pull request.
 
-Currently tested on Ubuntu 10.04 ONLY.
+4. All config values are heavily documented. Open up the attributes file and
+   you'll see what I mean. They were taken directly from the official redis
+repository, version 2.4.16.
 
-# ATTRIBUTES:
+5. Redis is now configured so that by default it doesn't persist the data to
+   disk. Before, snapshotting was turned on by default.  Just to make this
+clear, **the snapshotting and appendfile are turned off by default**. If you
+need these options, configure them via role attributes.
 
-	['redis']['bind']         # "127.0.0.1"
-	['redis']['port']         # "6379"
-	['redis']['config_path']  # "/etc/redis/redis.conf"
-	['redis']['daemonize']    # "no"
-	['redis']['timeout']      # "300"
-	['redis']['loglevel']     # "notice"
-	['redis']['password']     # nil
-
-	['redis']['source']['version']          # "2.4.1"
-	['redis']['source']['prefix']           # "/usr/local"
-	['redis']['source']['tar_url']          # "http://redis.googlecode.com/files/redis-2.4.1.tar.gz"
-	['redis']['source']['tar_checksum']     # "38e02..."
-	['redis']['source']['create_service']   # true
-	['redis']['source']['user']             # "redis"
-	['redis']['source']['group']            # "redis"
-
-# USAGE:
-
-* Add cookbook ``redis`` to your runlist. This will install redis on your machine.
-* Add cookbook ``redis::source`` to your runlist. This will build redis on your machine from source.
-* Add cookbook ``redis::gem`` to your runlist. This will install the redis Rubygem.
-* Add cookbook ``redis::remove`` to your runlist if you want to remove redis on your machine.
+6. The redis user **is** given a shell: `/bin/sh`. Previously, this has been
+   set to `/bin/false`. Not sure if this is the best approach, but this enables
+upstart jobs via `su - redis -c 'some-command'`.

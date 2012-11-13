@@ -1,15 +1,14 @@
-maintainer       "dkd Internet Service GmbH"
-maintainer_email "christian.trabold@dkd.de"
-license          "All rights reserved"
-description      "Installs/Configures redis"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.0.4"
-recipe            "redis", "Includes the package recipe by default."
-recipe            "redis::package", "Sets up a redis server."
-recipe            "redis::gem", "Installs redis gem for ruby development."
-recipe            "redis::source", "Builds redis server from sources."
-recipe            "redis::remove", "Removes redis server and redis gem, if installed."
+maintainer        "Gerhard Lazu"
+maintainer_email  "gerhard@lazu.co.uk"
+license           "Apache 2.0"
+description       "Installs and configures latest stable Redis"
+version           "2.1.0"
 
-%w{ ubuntu debian }.each do |os|
-  supports os
-end
+recipe "redis::source", "Installs redis from source"
+recipe "redis::master", "Installs redis from source and configures it as a master instance"
+recipe "redis::slave", "Installs redis from source and configures it as a slave instance"
+
+supports "ubuntu"
+supports "debian"
+
+depends "build-essential"
