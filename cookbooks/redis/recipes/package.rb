@@ -1,9 +1,9 @@
 #
+# Author:: Christian Trabold <christian.trabold@dkd.de>
 # Cookbook Name:: redis
-# Recipe:: server_package
+# Recipe:: package
 #
-# Copyright 2010, Atari, Inc
-# Copyright 2012, CX, Inc
+# Copyright 2011, dkd Internet Service GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,19 @@
 # limitations under the License.
 #
 
-include_recipe "redis::_group"
-include_recipe "redis::_user"
-include_recipe "redis::_server_install_from_package"
-include_recipe "redis::_server_service"
-include_recipe "redis::_server_config"
+package "redis-server"
+
+service "redis" do
+  start_command "/etc/init.d/redis-server start #{node['redis']['config_path']}"
+  stop_command "/etc/init.d/redis-server stop"
+  restart_command "/etc/init.d/redis-server restart"
+  action :start
+end
+
+template "/etc/redis/redis.conf" do
+  source "redis.conf.erb"
+  owner "root"
+  group "root"
+  mode 0644
+  notifies :restart, resources(:service => "redis")
+end
