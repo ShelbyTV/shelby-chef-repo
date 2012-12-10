@@ -13,3 +13,4 @@ node['shelby']['web']['domain'] = 'staging.shelby.tv'
 node['shelby']['web']['nginx']['extension-cache']['expires'] = false
 
 include_recipe "shelby::shelby_web"
+include_recipe "redis"
