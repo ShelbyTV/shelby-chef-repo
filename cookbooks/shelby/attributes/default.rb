@@ -8,7 +8,6 @@ default['shelby']['user_rvm']['branch'] = 'none'
 
 default['shelby']['web']['domain'] = 'shelby.tv'
 default['shelby']['web']['certificates']['dir'] = "/etc/nginx/certificates"
-default['shelby']['web']['certificates']['file_ext'] = "crt"
 default['shelby']['web']['certificates']['install'] = true
 
 #--- only caching extension/bookmarklet code for 2 days b/c we don't have cache busting

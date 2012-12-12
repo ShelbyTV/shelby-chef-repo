@@ -15,8 +15,8 @@ node['nginx']['tcp_nodelay'] = "off"
 
 include_recipe "nginx::source"
 
-certificate_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.#{node['shelby']['web']['certificates']['file_ext']}"
-key_file = "#{node['shelby']['web']['certificates']['dir']}/#{node['shelby']['web']['domain']}.key"
+certificate_file = "#{node['shelby']['web']['certificates']['dir']}/shelby.tv.pem"
+key_file = "#{node['shelby']['web']['certificates']['dir']}/shelby.tv.key"
 
 if node['shelby']['web']['certificates']['install']
   # install the ssl certificates
