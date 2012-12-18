@@ -77,6 +77,15 @@ nginx_app "shelby-gt-web" do
       ]
     },
     {
+      :path => "~ ^/[.]html/",
+      :directives => [
+        "root /home/gt/web/current/public/html;",
+        "gzip_static on;",
+        "expires max;",
+        "add_header Cache-Control public;"
+      ]
+    },
+    {
       :path => "~ ^/favicon\.(ico|png)",
       :directives => [
         "root /home/gt/web/current/public;",
