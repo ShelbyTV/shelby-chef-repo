@@ -77,7 +77,7 @@ nginx_app "shelby-gt-web" do
       ]
     },
     {
-      :path => "~ ^/\.html/",
+      :path => "~* [.]html$",
       :directives => [
         "root /home/gt/web/current/public/html;",
         "gzip_static on;",
