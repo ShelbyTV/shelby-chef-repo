@@ -66,6 +66,15 @@ nginx_app "shelby-gt-web" do
         node['shelby']['web']['nginx']['extension-cache']['expires'] ? "add_header Cache-Control public;" : nil
       ].compact
     },
+    {
+      :path => "= /assets/turbo.js",
+      :directives => [
+        "root /home/gt/web/current/public;",
+        "expires 48h;",
+        "gzip_static on;",
+        "add_header Cache-Control public;"
+      ]
+    },
     #--- send cache expiry headers for static assets ---
     {
       :path => "~ ^/(assets|fonts|images|javascripts|stylesheets|system)/",
