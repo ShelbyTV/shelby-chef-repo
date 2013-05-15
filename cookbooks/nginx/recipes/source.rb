@@ -10,11 +10,12 @@ configure_flags = [
   "--prefix=#{node[:nginx][:install_path]}",
   "--conf-path=#{node[:nginx][:dir]}/nginx.conf",
   "--with-http_ssl_module",
-  "--with-http_gzip_static_module"
+  "--with-http_gzip_static_module",
+  "--with-http_stub_status_module"
 ].join(" ")
 
 remote_file "/usr/local/src/nginx-#{node[:nginx][:version]}.tar.gz" do
-  source node[:nginx][:source]
+  source "http://nginx.org/download/nginx-#{node[:nginx][:version]}.tar.gz"
   action :create_if_missing
 end
 
