@@ -1,6 +1,5 @@
-set[:nginx][:version]               = "1.2.3"
-set[:nginx][:source]                = "http://nginx.org/download/nginx-#{nginx[:version]}.tar.gz"
-set[:nginx][:apt_packages]          = %w[nginx-common nginx-full nginx]
+default[:nginx][:version]           = "1.4.1"
+default[:nginx][:apt_packages]      = %w[nginx-common nginx-full nginx]
 
 default[:nginx][:dir]               = "/etc/nginx"
 default[:nginx][:log_dir]           = "/var/log/nginx"
@@ -245,8 +244,8 @@ default[:nginx][:ssl][:certificate]           = false
 default[:nginx][:ssl][:certificate_key]       = false
 default[:nginx][:ssl][:session_cache]         = "shared:SSL:10m"
 default[:nginx][:ssl][:session_timeout]       = "10m"
-default[:nginx][:ssl][:protocols]             = "SSLv2 SSLv3 TLSv1 TLSv1.1 TLSv1.2"
-default[:nginx][:ssl][:ciphers]               = "RC4:HIGH:!aNULL:!MD5"
+default[:nginx][:ssl][:protocols]             = "SSLv3 TLSv1 TLSv1.1 TLSv1.2"
+default[:nginx][:ssl][:ciphers]               = "HIGH:RC4:+HIGH+TLSv1:-DH:!aNULL:!MD5"
 default[:nginx][:ssl][:prefer_server_ciphers] = "on"
 
 
@@ -310,6 +309,7 @@ default[:nginx][:proxy_headers] = [
 
 ### Logrotation settings
 #
+default[:nginx][:logrotate][:manage]        = true
 default[:nginx][:logrotate][:period]        = "daily"
 default[:nginx][:logrotate][:keep]          = 7
 default[:nginx][:logrotate][:mode]          = "0644"
