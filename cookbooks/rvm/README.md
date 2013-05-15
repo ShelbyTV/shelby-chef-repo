@@ -20,7 +20,7 @@ development), include `recipe[rvm::user]` in your run_list and add a user
 hash to the `user_installs` attribute list. For example:
 
     node['rvm']['user_installs'] = [
-      { 'user'          => 'wigglebottom'
+      { 'user'          => 'wigglebottom',
         'default_ruby'  => 'rbx',
         'rubies'        => ['1.9.2', '1.8.7']
       }
@@ -77,10 +77,10 @@ File an [issue][issues] if this isn't the case.
 The following platforms have been tested with this cookbook, meaning that
 the recipes and LWRPs run on these platforms without error:
 
-* ubuntu (10.04/10.10/11.04)
+* ubuntu (10.04/10.10/11.04/12.04)
 * debian (6.0)
-* mac_os_x (10.6/10.7)
-* mac_os_x_server
+* mac_os_x (10.6/10.7) (See [Platform Notes](#platform-notes-osx))
+* mac_os_x_server (See [Platform Notes](#platform-notes-osx))
 * suse (openSUSE, SLES)
 * centos
 * amazon (2011.09)
@@ -90,11 +90,23 @@ the recipes and LWRPs run on these platforms without error:
 
 Please [report][issues] any additional platforms so they can be added.
 
+### Platform Notes
+
+#### <a name="platform-notes-osx"></a> OSX
+
+This cookbook suggests the [homebrew](http://community.opscode.com/cookbooks/homebrew) cookbook, which is needed to install
+any additional packages needed to compile ruby. RVM now ships binary rubies,
+but will require homebrew to install any additional libraries.
+
 ### <a name="requirements-cookbooks"></a> Cookbooks
 
-There are **no** external cookbook dependencies. However, if you are
-installing [JRuby][jruby] then a Java runtime will need to be installed.
-The Opscode [java cookbook][java_cb] can be used on supported platforms.
+This cookbook depends on the following external cookbooks:
+
+* [chef\_gem][chef_gem_cb]
+
+If you are installing [JRuby][jruby] then a Java runtime will need to be
+installed. The Opscode [java cookbook][java_cb] can be used on supported
+platforms.
 
 ## <a name="installation"></a> Installation
 
@@ -102,6 +114,18 @@ Depending on the situation and use case there are several ways to install
 this cookbook. All the methods listed below assume a tagged version release
 is the target, but omit the tags to get the head of development. A valid
 Chef repository structure like the [Opscode repo][chef_repo] is also assumed.
+
+### <a name="installation-berkshelf"></a> Using Berkshelf
+
+[Berkshelf][berkshelf] is a way to manage a cookbook or an application's
+cookbook dependencies. Include the cookbook in your Berksfile, and then run
+`berks install`. To install using Berkshelf:
+
+    gem install berkshelf
+    cd chef-repo
+    berks init
+    echo "cookbook 'rvm', github: 'fnichol/chef-rvm'" >> Berksfile
+    berks install
 
 ### <a name="installation-librarian"></a> Using Librarian-Chef
 
@@ -228,7 +252,7 @@ The default Ruby for RVM installed system-wide. If the RVM Ruby is not
 installed, it will be built as a pre-requisite. The value can also contain a
 gemset in the form of `"ruby-1.8.7-p352@awesome"`.
 
-The default is `"ruby-1.9.3-p194"`. To disable a default Ruby from being
+The default is `"ruby-2.0.0-p0"`. To disable a default Ruby from being
 set, use an empty string (`""`) or a value of `"system"`.
 
 ### <a name="attributes-user-default-ruby"></a> user_default_ruby
@@ -237,7 +261,7 @@ The default Ruby for RVMs installed per-user when not explicitly set for that
 user. If the RVM Ruby is not installed, it will be built as a pre-requisite.
 The value can also contain a gemset in the form of `"ruby-1.8.7-p352@awesome"`.
 
-The default is `"ruby-1.9.3-p194"`. To disable a default Ruby from being
+The default is `"ruby-2.0.0-p0"`. To disable a default Ruby from being
 set, use an empty string (`""`) or a value of `"system"`.
 
 ### <a name="attributes-rubies"></a> rubies
@@ -245,14 +269,15 @@ set, use an empty string (`""`) or a value of `"system"`.
 A list of additional RVM system-wide Rubies to be built and installed. This
 list does not need to necessarily contain your default Ruby as the
 `rvm_default_ruby` resource will take care of installing itself. You may also
-include patch info. For example:
+include patch info and a rubygems version. For example:
 
     node['rvm']['rubies'] = [
       "ree-1.8.7",
       "jruby",
       {
-        :version => '1.9.3-p125-perf',
-        :patch => "falcon"
+        'version' => '1.9.3-p125-perf',
+        'patch' => 'falcon',
+        'rubygems_version' => '1.5.2'
       }
     ]
 
@@ -322,7 +347,8 @@ each gem hash and target Ruby environment. For example:
         { 'name'    => 'rake',
           'version' => '0.9.2'
         }
-      ]
+      ],
+      'ruby-1.9.2-p280@empty-gemset' => [],
       'jruby' => [
         { 'name'    => 'nokogiri',
           'version' => '1.5.0.beta.2'
@@ -384,8 +410,9 @@ The hash keys correspond to the default/system equivalents. For example:
           "ree-1.8.7",
           "jruby",
           {
-            :version => '1.9.3-p125-perf',
-            :patch => "falcon"
+            'version' => '1.9.3-p125-perf',
+            'patch' => "falcon",
+            'rubygems_version' => '1.5.2'
           }
         ],
         'rvmrc'         => {
@@ -1437,13 +1464,23 @@ under `node['rvm']['root_path']`.
       action        :create
     end
 
-## <a name="development"></a> Development
+## <a name="contributing"></a> Contributing
 
 * Source hosted at [GitHub][repo]
 * Report issues/Questions/Feature requests on [GitHub Issues][issues]
 
 Pull requests are very welcome! Make sure your patches are well tested.
 Ideally create a topic branch for every seperate change you make.
+
+### Testing
+
+Make sure you have the following requirements setup:
+
+* [Vagrant](http://www.vagrantup.com/)
+* [vagrant-verkshelf](https://github.com/riotgames/vagrant-berkshelf)
+
+After you `bundle install` run `rake` for unit tests and `kitchen test` for
+integration level tests.
 
 ## <a name="license"></a> License and Author
 
@@ -1466,6 +1503,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+[berkshelf]:            http://berkshelf.com
+[chef_gem_cb]:          http://community.opscode.com/cookbooks/chef_gem
 [chef_repo]:            https://github.com/opscode/chef-repo
 [cheffile]:             https://github.com/applicationsonline/librarian/blob/master/lib/librarian/chef/templates/Cheffile
 [compilation]:          http://wiki.opscode.com/display/chef/Evaluate+and+Run+Resources+at+Compile+Time
