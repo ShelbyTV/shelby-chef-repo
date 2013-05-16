@@ -10,5 +10,5 @@
 # then do a user install of rvm for that user
 
 include_recipe "shelby::user"
-node['shelby']['user_rvm']['username'] = node['shelby']['user']['name']
+node.set['shelby']['user_rvm']['username'] = node['shelby']['user']['name']
 include_recipe "shelby::user_rvm"

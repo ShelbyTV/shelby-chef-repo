@@ -9,7 +9,7 @@
 # Recipe to do a user install of rvm
 
 # install rvm for the nos user
-node['rvm']['user_installs'] = [
+node.set['rvm']['user_installs'] = [
   {
     'user'          => node['shelby']['user_rvm']['username'],
     'default_ruby'  => node['shelby']['user_rvm']['default_ruby'],

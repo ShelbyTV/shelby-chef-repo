@@ -12,5 +12,9 @@ default['shelby']['web']['certificates']['install'] = true
 
 #--- only caching extension/bookmarklet code for 2 days b/c we don't have cache busting
 default['shelby']['web']['nginx']['extension-cache']['expires'] = '48h'
-
 default['shelby']['web']['nginx']['custom_locations'] = []
+
+default['shelby']['nginx']['app_name'] = 'web_app'
+default['shelby']['nginx']['upstream'] = 'upstream'
+
+node.default['build_essential']['compiletime'] = true
