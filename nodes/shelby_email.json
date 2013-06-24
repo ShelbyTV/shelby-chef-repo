@@ -1,3 +1,0 @@
-{
-  "run_list": [ "shelby::shelby_postfix_for_sendgrid" ]
-}
