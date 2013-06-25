@@ -10,6 +10,8 @@
 # by relaying them through Postifx then Sendgrid
 
 include_recipe "shelby::shelby_user_rvm"
-include_recipe "memcached"
+include_recipe "apt"
+include_recipe "shelby::memcached"
+include_recipe "shelby::shelby_mongodb_hosts"
 include_recipe "shelby::shelby_postfix_for_sendgrid"
 include_recipe "shelby::firewall_ssh_only"
