@@ -13,7 +13,7 @@ include_recipe "apt"
 node['shelby']['user']['name'] = 'vagrant'
 node['shelby']['user_rvm']['username'] = node['shelby']['user']['name']
 include_recipe "shelby::user_rvm"
-include_recipe "shelby::shelby_memcached"
+include_recipe "shelby::memcached"
 include_recipe "redis"
 include_recipe "java"
 require_recipe "mongodb::10gen_repo"
