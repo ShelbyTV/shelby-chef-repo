@@ -3,6 +3,13 @@ shelby-chef-repo
 
 Contains Chef cookbooks for all Shelby automatic provisioning
 
+Getting Started
+================
+
+Our Shelby Chef cookbook is designed to be used for provisioning using vagrant or knife-solo.  So far, it only works with Chef versions < 11.0  Amusingly, you can't specify the Chef version to install with *knife solo prepare* before knife-solo version 0.3.0, but our repo is designed for knife-solo 0.2.0
+
+So, for things to work, you need to run *knife solo prepare* with knife-solo 0.3.0.  There's a Gemfile in this project now so that you can use bundler to make sure you run with that version, which as of this writing was only available from Github.
+
 Overview
 ========
 
