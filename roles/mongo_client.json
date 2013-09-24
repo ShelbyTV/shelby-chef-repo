@@ -1,0 +1,9 @@
+{
+  "name": "mongo_client",
+  "default_attributes": { },
+  "override_attributes": { },
+  "json_class": "Chef::Role",
+  "description": "Configure to contact our mongo db servers.",
+  "chef_type": "role",
+  "run_list": [ "recipe[shelby::shelby_mongodb_hosts]" ]
+}
