@@ -2,17 +2,6 @@
 
 This file is used to list changes made in each version of ulimit.
 
-## 0.3.1
-
-* Fix domain typo, thanks to David Radcliffe (https://github.com/dwradcliffe) (also reported by Lewis Thompson (https://github.com/lewisthompson))
-* Add support for split hard/soft nofile limits, thanks to Troy Ready (https://github.com/troyready)
-* Fix license boilerplate, thanks to Troy Ready (https://github.com/troyready)
-* Fix limits.d file extension, thanks to https://github.com/soul-rebel
-
-## 0.3.0
-
-* Add Domain LWRP for arbitrary rule creation. Thanks for Chris Roberts (https://github.com/chrisroberts)
-
 ## 0.2.0
 
 * Support specifying users via attributes (as long as your runlist includes the ulimit::default recipe). Thanks to Dmytro Shteflyuk (https://github.com/kpumuk)
