@@ -1,0 +1,15 @@
+{
+  "name": "standard_redis_install",
+  "default_attributes": { },
+  "override_attributes": {
+    "redis" : {
+      "version" : "2.4.17",
+      "dir" : "redis-2.4.17",
+      "source" : "http://redis.googlecode.com/files/redis-2.4.17.tar.gz"
+    }
+  },
+  "json_class": "Chef::Role",
+  "description": "Override redis attributes to install our standard configuration of redis.",
+  "chef_type": "role",
+  "run_list": []
+}
