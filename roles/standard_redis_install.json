@@ -2,10 +2,15 @@
   "name": "standard_redis_install",
   "default_attributes": { },
   "override_attributes": {
-    "redis" : {
-      "version" : "2.4.17",
-      "dir" : "redis-2.4.17",
-      "source" : "http://redis.googlecode.com/files/redis-2.4.17.tar.gz"
+    "redisio" : {
+      "version" : "2.6.16",
+      "mirror" : "http://github.com/antirez/redis/archive",
+      "base_name" : "",
+      "default_settings" : {
+        "syslogenabled" : "no",
+        "loglevel" : "notice",
+        "logfile" : "/var/log/redis.log"
+      }
     }
   },
   "json_class": "Chef::Role",
