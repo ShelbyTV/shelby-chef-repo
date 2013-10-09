@@ -1,3 +1,5 @@
+//TODO: needs Mongo, s3cmd, cron entries
+
 {
   "run_list": [ "role[mongo_client]", "role[standard_redis_install]", "recipe[shelby::shelby_audrey2]" ]
 }

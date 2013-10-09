@@ -1,4 +1,0 @@
-{
-
-  "run_list": [ "role[standard_redis_install]","recipe[shelby::shelby_audrey2]" ]
-}
