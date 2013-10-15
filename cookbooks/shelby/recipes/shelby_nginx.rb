@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: shelby
-# Recipe:: shelby_web_nginx
+# Recipe:: shelby_nginx
 #
 # Copyright 2012, Shelby.tv
 #
@@ -19,8 +19,7 @@ include_recipe "nginx::source"
 
 nginx_app node['shelby']['nginx']['app_name'] do
   server_name node['ipaddress']
-  listen ['80 default_server', 'localhost']
-  # listen ['80 default_server', '443 ssl', 'localhost']
+  listen node['shelby']['nginx']['listen']
   locations [
     {
       :path => "/",

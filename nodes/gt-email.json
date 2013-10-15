@@ -1,3 +1,1 @@
-{
-  "run_list": [ "shelby::shelby_email" ]
-}
+{"run_list": ["shelby::shelby_email"]}

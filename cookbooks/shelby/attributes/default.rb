@@ -15,5 +15,7 @@ default['shelby']['web']['nginx']['custom_locations'] = []
 
 default['shelby']['nginx']['app_name'] = 'web_app'
 default['shelby']['nginx']['upstream'] = 'upstream'
+default['shelby']['nginx']['listen'] = ['80 default_server', 'localhost']
+
 
 node.default['build_essential']['compiletime'] = true
