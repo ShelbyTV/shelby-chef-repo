@@ -6,7 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-# Install and congigure nginx to serve a web app
+# Install and congigure nginx to serve a web app with unicorn
 # This should be as generic and configurable as possible
 # Eventually we'll replace shelby_web_nginx.rb with this
 

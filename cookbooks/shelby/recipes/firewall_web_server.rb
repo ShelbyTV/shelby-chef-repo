@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: shelby
-# Recipe:: firewall_web
+# Recipe:: firewall_web_server
 #
 # Copyright 2012, Shelby.tv
 #

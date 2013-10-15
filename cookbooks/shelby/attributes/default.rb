@@ -6,7 +6,6 @@ default['shelby']['user_rvm']['rubies'] = ['ruby-1.9.3']
 default['shelby']['user_rvm']['version'] = '1.16.14'
 default['shelby']['user_rvm']['branch'] = 'none'
 
-default['shelby']['web']['domain'] = 'shelby.tv'
 default['shelby']['web']['certificates']['dir'] = "/etc/nginx/certificates"
 default['shelby']['web']['certificates']['install'] = true
 

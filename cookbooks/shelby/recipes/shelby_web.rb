@@ -14,4 +14,4 @@ include_recipe "shelby::shelby_user_rvm"
 # we need Java for rails asset pipeline js minification with YUI
 include_recipe "java"
 include_recipe "shelby::shelby_web_nginx"
-include_recipe "shelby::firewall_web"
+include_recipe "shelby::firewall_web_server"
