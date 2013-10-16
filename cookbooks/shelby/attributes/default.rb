@@ -17,5 +17,10 @@ default['shelby']['nginx']['app_name'] = 'web_app'
 default['shelby']['nginx']['upstream'] = 'upstream'
 default['shelby']['nginx']['listen'] = ['80 default_server', 'localhost']
 
+default['shelby']['nginx']['enable_ssl'] = false
+default['shelby']['nginx']['certificates_dir'] = "/etc/nginx/certificates"
+default['shelby']['nginx']['self_signed_certificate'] = false
+default['shelby']['nginx']['certificate_file'] = "shelby.tv.pem"
+default['shelby']['nginx']['key_file'] = "shelby.tv.key"
 
 node.default['build_essential']['compiletime'] = true

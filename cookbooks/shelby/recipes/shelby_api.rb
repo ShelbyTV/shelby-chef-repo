@@ -8,10 +8,11 @@
 #
 # Set up a server for the Shelby api
 
-# node['shelby']['nginx']['listen'] = ['80 default_server', '443 ssl', 'localhost']
 
 node.set['shelby']['nginx']['app_name'] = 'shelby-gt-api'
 node.set['shelby']['nginx']['upstream'] = 'shelby-gt-api'
+node.set['shelby']['nginx']['enable_ssl'] = true
+node.set['shelby']['nginx']['self_signed_certificate'] = true
 
 include_recipe "shelby::shelby_user_rvm"
 include_recipe "apt"
