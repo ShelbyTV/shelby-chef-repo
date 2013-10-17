@@ -15,34 +15,9 @@ node.set['nginx']['worker_processes'] = 1
 node.set['nginx']['multi_accept'] = "on"
 node.set['nginx']['tcp_nodelay'] = "off"
 
-include_recipe "nginx::source"
+node.set[:nginx][:log_format][:default] = %{'$remote_addr - $remote_user [$time_local] $scheme "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent"'}
 
-nginx_app node['shelby']['nginx']['app_name'] do
-  server_name node['ipaddress']
-  listen node['shelby']['nginx']['listen']
-  locations [
-    {
-      :path => "/",
-      :directives => [
-        "proxy_set_header X-Forwarded-Proto $scheme;",
-        "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-        "proxy_set_header X-Real-IP $remote_addr;",
-        "proxy_set_header Host $host;",
-        "proxy_redirect off;",
-        "proxy_http_version 1.1;",
-        "proxy_set_header Connection '';",
-        "proxy_pass http://#{node['shelby']['nginx']['upstream']};"
-      ]
-    }
-  ].concat node['shelby']['web']['nginx']['custom_locations']
-  upstreams [
-    {
-      :name => "#{node['shelby']['nginx']['upstream']}",
-      :servers => ["unix:/tmp/#{node['shelby']['nginx']['upstream']}.socket fail_timeout=0"]
-    }
-  ]
-  keepalive_timeout 70
-end
+include_recipe "nginx::source"
 
 if node['shelby']['nginx']['enable_ssl']
 
@@ -96,30 +71,36 @@ if node['shelby']['nginx']['enable_ssl']
 
   end
 
-  nginx_app "#{node['shelby']['nginx']['app_name']}-ssl" do
-    server_name node['ipaddress']
-    listen ['443 ssl']
-    locations [
-      {
-        :path => "/",
-        :directives => [
-          "proxy_set_header X-Forwarded-Proto https;",
-          "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "proxy_set_header X-Real-IP $remote_addr;",
-          "proxy_set_header Host $host;",
-          "proxy_redirect off;",
-          "proxy_http_version 1.1;",
-          "proxy_set_header Connection '';",
-          "proxy_pass http://#{node['shelby']['nginx']['upstream']}-ssl;"
-        ]
-      }
-    ].concat node['shelby']['web']['nginx']['custom_locations']
-    upstreams [
-      {
-        :name => "#{node['shelby']['nginx']['upstream']}-ssl",
-        :servers => ["unix:/tmp/#{node['shelby']['nginx']['upstream']}.socket fail_timeout=0"]
-      }
-    ]
+end
+
+listen_to = node['shelby']['nginx']['listen_to']
+listen_to << '443 ssl' if node['shelby']['nginx']['enable_ssl']
+
+nginx_app node['shelby']['nginx']['app_name'] do
+  server_name node['ipaddress']
+  listen listen_to
+  locations [
+    {
+      :path => "/",
+      :directives => [
+        "proxy_set_header X-Forwarded-Proto $scheme;",
+        "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
+        "proxy_set_header X-Real-IP $remote_addr;",
+        "proxy_set_header Host $host;",
+        "proxy_redirect off;",
+        "proxy_http_version 1.1;",
+        "proxy_set_header Connection '';",
+        "proxy_pass http://#{node['shelby']['nginx']['upstream']};"
+      ]
+    }
+  ].concat node['shelby']['web']['nginx']['custom_locations']
+  upstreams [
+    {
+      :name => "#{node['shelby']['nginx']['upstream']}",
+      :servers => ["unix:/tmp/#{node['shelby']['nginx']['upstream']}.socket fail_timeout=0"]
+    }
+  ]
+  if node['shelby']['nginx']['enable_ssl']
     custom_directives [
       "ssl_certificate #{certificate_file};",
       "ssl_certificate_key #{key_file};",
@@ -128,6 +109,6 @@ if node['shelby']['nginx']['enable_ssl']
       "ssl_ciphers  HIGH:!aNULL:!MD5;",
       "ssl_prefer_server_ciphers   on;"
     ]
-    keepalive_timeout 70
   end
+  keepalive_timeout 70
 end
