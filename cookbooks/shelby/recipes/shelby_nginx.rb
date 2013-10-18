@@ -110,5 +110,6 @@ nginx_app node['shelby']['nginx']['app_name'] do
       "ssl_prefer_server_ciphers   on;"
     ]
   end
+  error_log_format "error"
   keepalive_timeout 70
 end
