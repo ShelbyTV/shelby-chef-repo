@@ -9,7 +9,7 @@
 # Setup /etc/hosts entries that allow shelby Mongomapper models
 # to find the mongodb servers
 
-hostsfile_entry '108.166.56.26' do
+hostsfile_entry '10.183.73.244' do
   hostname  'gt-api-a'
   action    :create
 end
