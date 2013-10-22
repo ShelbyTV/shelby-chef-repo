@@ -61,12 +61,14 @@ if node['shelby']['nginx']['enable_ssl']
       owner 'root'
       group 'root'
       mode 0600
+      action :create_if_missing
     end
 
     cookbook_file key_file do
       owner 'root'
       group 'root'
       mode 0600
+      action :create_if_missing
     end
 
   end

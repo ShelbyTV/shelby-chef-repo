@@ -1,1 +1,1 @@
-{"run_list": ["role[mongo_client]", "recipe[shelby::shelby_api]"]}
+{"run_list": ["role[staging]", "role[mongo_client]", "recipe[shelby::shelby_api]"]}

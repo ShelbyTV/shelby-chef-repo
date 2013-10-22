@@ -1,0 +1,15 @@
+{
+  "name": "staging",
+  "default_attributes": { },
+  "override_attributes": {
+    "shelby": {
+      "nginx": {
+        "self_signed_certificate" : true
+      }
+    }
+  },
+  "json_class": "Chef::Role",
+  "description": "Override attributes that are different in a staging environment.",
+  "chef_type": "role",
+  "run_list": []
+}
