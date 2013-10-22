@@ -115,3 +115,19 @@ nginx_app node['shelby']['nginx']['app_name'] do
   error_log_format "error"
   keepalive_timeout 70
 end
+
+#setup log rotation for the app's nginx logs
+logrotate_app node['shelby']['nginx']['app_name'] do
+  cookbook "logrotate"
+  path [
+    "#{node[:nginx][:log_dir]}/#{node['shelby']['nginx']['app_name']}.access.log",
+    "#{node[:nginx][:log_dir]}/#{node['shelby']['nginx']['app_name']}.error.log"
+  ]
+  frequency 'daily'
+  rotate 7
+  options ['missingok', 'notifempty', 'compress', 'delaycompress', 'dateext']
+  sharedscripts true
+  postrotate "[ -f #{node[:nginx][:pid]} ] && kill -s USR1 `cat #{node[:nginx][:pid]}`"
+  create "0644 #{node[:nginx][:user]} root"
+  template_mode "0644"
+end
