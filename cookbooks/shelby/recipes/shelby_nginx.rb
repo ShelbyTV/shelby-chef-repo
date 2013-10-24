@@ -17,6 +17,8 @@ node.set['nginx']['tcp_nodelay'] = "off"
 
 node.set[:nginx][:log_format][:default] = %{'$remote_addr - $remote_user [$time_local] $scheme "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent"'}
 
+node.default['shelby']['nginx']['app_public_folder'] = "/home/#{node['shelby']['user']['name']}/#{node['shelby']['nginx']['app_deploy_folder']}/current/public"
+
 include_recipe "nginx::source"
 
 if node['shelby']['nginx']['enable_ssl']
@@ -78,24 +80,40 @@ end
 listen_to = node['shelby']['nginx']['listen_to']
 listen_to << '443 ssl' if node['shelby']['nginx']['enable_ssl']
 
+nginx_locations = []
+if node['shelby']['nginx']['autoconfigure_static_files']
+  # serve static files from the public folder of the rails application
+  nginx_locations << {
+    :path => "/",
+    :directives => [
+      "root #{node['shelby']['nginx']['app_public_folder']};",
+      "try_files $uri @upstream;",
+      "gzip_static on;",
+      "expires max;",
+      "add_header Cache-Control public;"
+    ]
+  }
+end
+
+# proxy everything else to unicorn
+nginx_locations << {
+  :path => node['shelby']['nginx']['autoconfigure_static_files'] ? "@upstream" : "/",
+  :directives => [
+    "proxy_set_header X-Forwarded-Proto $scheme;",
+    "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
+    "proxy_set_header X-Real-IP $remote_addr;",
+    "proxy_set_header Host $host;",
+    "proxy_redirect off;",
+    "proxy_http_version 1.1;",
+    "proxy_set_header Connection '';",
+    "proxy_pass http://#{node['shelby']['nginx']['upstream']};"
+  ]
+}
+
 nginx_app node['shelby']['nginx']['app_name'] do
   server_name node['ipaddress']
   listen listen_to
-  locations [
-    {
-      :path => "/",
-      :directives => [
-        "proxy_set_header X-Forwarded-Proto $scheme;",
-        "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-        "proxy_set_header X-Real-IP $remote_addr;",
-        "proxy_set_header Host $host;",
-        "proxy_redirect off;",
-        "proxy_http_version 1.1;",
-        "proxy_set_header Connection '';",
-        "proxy_pass http://#{node['shelby']['nginx']['upstream']};"
-      ]
-    }
-  ].concat node['shelby']['web']['nginx']['custom_locations']
+  locations nginx_locations.concat node['shelby']['web']['nginx']['custom_locations']
   upstreams [
     {
       :name => "#{node['shelby']['nginx']['upstream']}",

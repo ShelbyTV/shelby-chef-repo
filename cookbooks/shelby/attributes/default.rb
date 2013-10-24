@@ -14,8 +14,11 @@ default['shelby']['web']['nginx']['extension-cache']['expires'] = '48h'
 default['shelby']['web']['nginx']['custom_locations'] = []
 
 default['shelby']['nginx']['app_name'] = 'web_app'
+default['shelby']['nginx']['app_deploy_folder'] = 'web'
 default['shelby']['nginx']['upstream'] = 'upstream'
 default['shelby']['nginx']['listen_to'] = ['80 default_server', 'localhost']
+
+default['shelby']['nginx']['autoconfigure_static_files'] = false
 
 default['shelby']['nginx']['enable_ssl'] = false
 default['shelby']['nginx']['certificates_dir'] = "/etc/nginx/certificates"

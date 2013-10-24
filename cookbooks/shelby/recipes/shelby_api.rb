@@ -9,10 +9,12 @@
 # Set up a server for the Shelby api
 
 node.set['shelby']['nginx']['app_name'] = 'shelby-gt-api'
+node.set['shelby']['nginx']['app_deploy_folder'] = 'api'
 node.set['shelby']['nginx']['upstream'] = 'shelby-gt-api'
 node.set['shelby']['nginx']['enable_ssl'] = true
 node.set['shelby']['nginx']['certificate_file'] = "api.shelby.tv.pem"
 node.set['shelby']['nginx']['key_file'] = "api.shelby.tv.key"
+node.set['shelby']['nginx']['autoconfigure_static_files'] = true
 
 include_recipe "shelby::shelby_user_rvm"
 include_recipe "apt"
