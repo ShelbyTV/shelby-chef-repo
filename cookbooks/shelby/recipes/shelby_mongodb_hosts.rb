@@ -15,6 +15,12 @@ hostsfile_entry '10.183.73.244' do
 end
 
 
+hostsfile_entry '10.176.99.101' do
+  hostname  'gt-api-b'
+  action    :create
+end
+
+
 hostsfile_entry '10.176.69.208' do
   hostname  'gt-db-conversation-s0-a'
   action    :create
@@ -107,6 +113,12 @@ end
 
 hostsfile_entry '10.183.192.15' do
   hostname  'nos-db-s0-d'
+  action    :create
+end
+
+
+hostsfile_entry '10.208.2.75' do
+  hostname  'nos-db-s0-e'
   action    :create
 end
 
