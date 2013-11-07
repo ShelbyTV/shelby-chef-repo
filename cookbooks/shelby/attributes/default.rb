@@ -19,6 +19,7 @@ default['shelby']['nginx']['upstream'] = 'upstream'
 default['shelby']['nginx']['listen_to'] = ['80 default_server', 'localhost']
 
 default['shelby']['nginx']['autoconfigure_static_files'] = false
+default['shelby']['nginx']['enable_stub_status'] = false
 
 default['shelby']['nginx']['enable_ssl'] = false
 default['shelby']['nginx']['certificates_dir'] = "/etc/nginx/certificates"
