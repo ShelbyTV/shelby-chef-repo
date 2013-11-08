@@ -15,7 +15,7 @@ node.set['shelby']['nginx']['enable_ssl'] = true
 node.set['shelby']['nginx']['certificate_file'] = "api.shelby.tv.pem"
 node.set['shelby']['nginx']['key_file'] = "api.shelby.tv.key"
 node.set['shelby']['nginx']['autoconfigure_static_files'] = true
-node.set['shelby']['nginx']['enable_stub_status'] = true
+node.set['shelby']['nginx']['stub_status']['enable'] = true
 
 include_recipe "shelby::shelby_user_rvm"
 include_recipe "apt"

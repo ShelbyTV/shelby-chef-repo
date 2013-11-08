@@ -22,22 +22,8 @@ node.default['shelby']['nginx']['app_public_folder'] = "/home/#{node['shelby']['
 include_recipe "nginx::source"
 
 # if the option is specified, listen and respond to stub_status requests on localhost port 80
-if node['shelby']['nginx']['enable_stub_status']
-  # we have to start the name with aa so that the config loads before the actual app configuration
-  stub_status_app_name = "aa-#{node['shelby']['nginx']['app_name']}-status"
-  nginx_app stub_status_app_name do
-    server_name "localhost"
-    listen ['127.0.0.1:80']
-    locations [{
-      :path => "= /nginx_stub_status",
-      :directives => [
-        "stub_status on;",
-        "allow 127.0.0.1;",
-        "deny all;"
-      ]
-    }]
-    access_log "off"
-  end
+if node['shelby']['nginx']['stub_status']['enable']
+  include_recipe "shelby::shelby_nginx_status"
 end
 
 if node['shelby']['nginx']['enable_ssl']
