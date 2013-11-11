@@ -8,7 +8,6 @@
 #
 # Install and congigure nginx to serve a web app with unicorn
 # This should be as generic and configurable as possible
-# Eventually we'll replace shelby_web_nginx.rb with this
 
 node.set['nginx']['disable_robots_logging'] = false
 node.set['nginx']['worker_processes'] = 1
@@ -115,25 +114,30 @@ nginx_locations << {
   ]
 }
 
-nginx_app node['shelby']['nginx']['app_name'] do
-  server_name node['ipaddress']
-  listen listen_to
-  locations nginx_locations.concat node['shelby']['web']['nginx']['custom_locations']
-  upstreams [
-    {
-      :name => "#{node['shelby']['nginx']['upstream']}",
-      :servers => ["unix:/tmp/#{node['shelby']['nginx']['upstream']}.socket fail_timeout=0"]
-    }
-  ]
-  if node['shelby']['nginx']['enable_ssl']
-    custom_directives [
+nginx_custom_directives = node['shelby']['nginx']['custom_directives']
+if node['shelby']['nginx']['enable_ssl']
+  nginx_custom_directives = [
       "ssl_certificate #{certificate_file};",
       "ssl_certificate_key #{key_file};",
       "ssl_session_timeout 10m;",
       "ssl_protocols  SSLv2 SSLv3 TLSv1;",
       "ssl_ciphers  HIGH:!aNULL:!MD5;",
       "ssl_prefer_server_ciphers   on;"
-    ]
+  ] + nginx_custom_directives
+end
+
+nginx_app node['shelby']['nginx']['app_name'] do
+  server_name node['ipaddress']
+  listen listen_to
+  locations nginx_locations.concat node['shelby']['nginx']['custom_locations']
+  upstreams [
+    {
+      :name => "#{node['shelby']['nginx']['upstream']}",
+      :servers => ["unix:/tmp/#{node['shelby']['nginx']['upstream']}.socket fail_timeout=0"]
+    }
+  ]
+  if !nginx_custom_directives.empty?
+    custom_directives nginx_custom_directives
   end
   error_log_format "error"
   keepalive_timeout 70

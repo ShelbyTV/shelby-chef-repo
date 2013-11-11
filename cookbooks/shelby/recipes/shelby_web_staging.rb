@@ -9,7 +9,7 @@
 # Set up a staging server for the Shelby web app
 
 # don't cache the bookmarklet code so it will be easier to test changes in staging
-node['shelby']['web']['nginx']['extension-cache']['expires'] = false
+# node['shelby']['web']['nginx']['extension-cache']['expires'] = false
 
-include_recipe "shelby::shelby_web"
-include_recipe "redis"
+# include_recipe "shelby::shelby_web"
+# include_recipe "redis"
