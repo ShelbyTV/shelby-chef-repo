@@ -14,7 +14,4 @@ node.set['shelby']['nginx']['upstream'] = 'audrey2'
 include_recipe "shelby::shelby_user_rvm"
 include_recipe "shelby::shelby_nginx"
 include_recipe "shelby::firewall_audrey2"
-
-node.set['redisio']['default_settings']['datadir'] = "/home/#{node['shelby']['user']['name']}/redis-dump"
-include_recipe "redisio::install"
-include_recipe "redisio::enable"
+include_recipe "shelby::redis"

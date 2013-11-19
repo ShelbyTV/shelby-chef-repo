@@ -25,7 +25,8 @@ include_recipe "shelby::memcached"
 include_recipe "shelby::shelby_mongodb_hosts"
 include_recipe "shelby::shelby_nginx"
 include_recipe "shelby::firewall_web_server"
-
-package "scons" do
-  action :install
-end
+# we need redis for Resque
+include_recipe "shelby::redis"
+# we need imagemagick for Paperclip
+package "imagemagick"
+package "scons"
