@@ -30,4 +30,6 @@ default['shelby']['nginx']['key_file'] = "shelby.tv.key"
 #--- only caching extension/bookmarklet code for 2 days b/c we don't have cache busting
 default['shelby']['web']['extension-cache']['expires'] = '48h'
 
+default['shelby']['firewall']['redis_allowed_sources'] = []
+
 node.default['build_essential']['compiletime'] = true
