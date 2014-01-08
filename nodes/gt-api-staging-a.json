@@ -1,1 +1,8 @@
-{"run_list": ["role[staging]", "role[mongo_client]", "recipe[shelby::shelby_api]"]}
+{
+  "shelby":{
+    "firewall":{
+      "redis_allowed_sources":["10.176.102.163", "10.180.173.25"]
+    }
+  },
+  "run_list": ["role[staging]", "role[mongo_client]", "recipe[shelby::shelby_api]", "recipe[shelby::firewall_redis]"]
+}
