@@ -31,5 +31,6 @@ default['shelby']['nginx']['key_file'] = "shelby.tv.key"
 default['shelby']['web']['extension-cache']['expires'] = '48h'
 
 default['shelby']['firewall']['redis_allowed_sources'] = []
+default['shelby']['firewall']['audrey2_allowed_sources'] = ['108.166.56.26', '198.61.235.104', '198.61.236.118', '166.78.255.147']
 
 node.default['build_essential']['compiletime'] = true

@@ -19,12 +19,14 @@ firewall_rule "ssh" do
   action :allow
 end
 
-# open standard http port to tcp traffic from shelby api box only
-firewall_rule "http" do
-  port 80
-  source '108.166.56.26'
-  protocol :tcp
-  action :allow
+# open standard http port to tcp traffic from allowed sources only
+node['shelby']['firewall']['audrey2_allowed_sources'].each do |allowed_source|
+  firewall_rule "audrey2_http" do
+    port 80
+    source allowed_source
+    protocol :tcp
+    action :allow
+  end
 end
 
 # by default, reject all incoming traffic
