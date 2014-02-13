@@ -39,17 +39,26 @@ node.set['shelby']['nginx']['custom_directives'] = [
   "  set $mobile_request true;",
   "}",
   "",
+  "if ($http_user_agent ~* '(KFTT)'){",
+  "  set $mobile_request false;",
+  "  set $mobile_cookie \"mobile=false\";",
+  "}",
+  "",
+  "if ($http_user_agent ~* '(AmazonWebAppPlatform)') {",
+  "  set $mobile_request false;",
+  "}",
+  "",
   "if ($args ~ 'mobile=false') {",
   "  set $mobile_request false;",
   "  set $mobile_cookie  \"mobile=false\";",
   "}",
   "",
   "if ($args ~ 'mobile=true') {",
-  "  set $mobile_request true;",
-  "  set $mobile_cookie \"mobile=true\";",
+  "  #set $mobile_request true;",
+  "  #set $mobile_cookie \"mobile=true\";",
   "}",
   "",
-  "add_header Set-Cookie $mobile_cookie;",
+  "#add_header Set-Cookie $mobile_cookie;",
   "",
   "if ($http_cookie ~ 'mobile=false') {",
   "  set $mobile_request false;",
@@ -128,15 +137,6 @@ node.set['shelby']['nginx']['custom_locations'] = [
         "root /home/gt/web/current/public;",
         "gzip_static on;",
         "expires max;",
-        "add_header Cache-Control public;"
-      ]
-    },
-    {
-      :path => "^~ /web-app-manifest.json",
-      :directives => [
-        "root /home/gt/web/current/public;",
-        "#gzip_static on;",
-        "#expires max;",
         "add_header Cache-Control public;"
       ]
     }
