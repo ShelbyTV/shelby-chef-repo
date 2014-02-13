@@ -1,1 +1,1 @@
-{"run_list":["recipe[shelby::shelby_nginx_status]"]}
+{"run_list":["recipe[shelby::shelby_web]"]}
